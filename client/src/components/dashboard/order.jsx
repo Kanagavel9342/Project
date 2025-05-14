@@ -24,8 +24,8 @@ const OrderEntry = () => {
 
   const handleEditClick = (order, product) => {
     setEditingOrder({
-      orderId: order.orderId,
-      productId: product.id, // ✅ Use the actual DB product ID
+      orderId: order.orderId, // ✅ Use `id` for updating
+      productIndex: product.productIndex,
     });
     setFormData({
       customerName: order.customerName,
@@ -44,7 +44,7 @@ const OrderEntry = () => {
 
   const handleDeleteClick = async (orderId) => {
     if (window.confirm("Are you sure you want to delete this order?")) {
-      await deleteOrder(orderId);
+      await deleteOrder(orderId); // ✅ Keep using `orderId` for deletion
       fetchOrders();
     }
   };
@@ -57,8 +57,13 @@ const OrderEntry = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoadingSave(true);
+
     try {
-      await updateOrder(editingOrder.orderId, editingOrder.productId, formData);
+      await updateOrder(
+        editingOrder.orderId,
+        editingOrder.productIndex,
+        formData
+      );
       setShowEditForm(false);
       await fetchOrders();
     } catch (error) {
@@ -73,35 +78,107 @@ const OrderEntry = () => {
       {showEditForm && (
         <div className="edit-form-overlay">
           <div className="edit-form-container">
-            <button className="close-btn" onClick={() => setShowEditForm(false)}>
+            <button
+              className="close-btn"
+              onClick={() => setShowEditForm(false)}
+            >
               <FaTimes />
             </button>
             <h3>Edit Order</h3>
             <form onSubmit={handleSubmit}>
               <div className="form-grid">
-                {[
-                  "customerName",
-                  "contactNumber",
-                  "district",
-                  "micron",
-                  "meter",
-                  "size",
-                  "color",
-                  "nos",
-                  "quantity",
-                  "unit",
-                ].map((field) => (
-                  <div className="form-group" key={field}>
-                    <label>{field.replace(/([A-Z])/g, " $1")}</label>
-                    <input
-                      type="text"
-                      name={field}
-                      value={formData[field] || ""}
-                      onChange={handleInputChange}
-                      required={["customerName", "contactNumber"].includes(field)}
-                    />
-                  </div>
-                ))}
+                <div className="form-group">
+                  <label>Customer Name</label>
+                  <input
+                    type="text"
+                    name="customerName"
+                    value={formData.customerName}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Contact Number</label>
+                  <input
+                    type="text"
+                    name="contactNumber"
+                    value={formData.contactNumber}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>District</label>
+                  <input
+                    type="text"
+                    name="district"
+                    value={formData.district}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Micron</label>
+                  <input
+                    type="text"
+                    name="micron"
+                    value={formData.micron}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Meter</label>
+                  <input
+                    type="text"
+                    name="meter"
+                    value={formData.meter}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Size</label>
+                  <input
+                    type="text"
+                    name="size"
+                    value={formData.size}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Color</label>
+                  <input
+                    type="text"
+                    name="color"
+                    value={formData.color}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Nos</label>
+                  <input
+                    type="text"
+                    name="nos"
+                    value={formData.nos}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Quantity</label>
+                  <input
+                    type="text"
+                    name="quantity"
+                    value={formData.quantity}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Unit</label>
+                  <input
+                    type="text"
+                    name="unit"
+                    value={formData.unit}
+                    onChange={handleInputChange}
+                  />
+                </div>
               </div>
               <button type="submit" className="btn-save" disabled={loadingSave}>
                 {loadingSave ? "Saving..." : "Save Changes"}
@@ -116,7 +193,11 @@ const OrderEntry = () => {
           <h3>
             <FaPlusCircle /> Orders Details
           </h3>
-          <button onClick={fetchOrders} className="btn-refresh" disabled={loading}>
+          <button
+            onClick={fetchOrders}
+            className="btn-refresh"
+            disabled={loading}
+          >
             <FaSync className={loading ? "spin" : ""} />
             {loading ? "Refreshing..." : "Refresh"}
           </button>
@@ -184,7 +265,10 @@ const OrderEntry = () => {
                       <td className="actions">
                         <button
                           onClick={() =>
-                            handleEditClick(order, product)
+                            handleEditClick(order, {
+                              ...product,
+                              productIndex: pIndex,
+                            })
                           }
                           className="btn-edit"
                           title="Edit"
@@ -210,7 +294,11 @@ const OrderEntry = () => {
         {orders.length > 0 && (
           <div className="card-footer">
             <span className="order-count">
-              {orders.reduce((total, order) => total + order.products.length, 0)} products
+              {orders.reduce(
+                (total, order) => total + order.products.length,
+                0
+              )}{" "}
+              products
             </span>
           </div>
         )}
