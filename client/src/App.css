@@ -1,0 +1,19 @@
+body {
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(135deg, #2c3e50, #3498db);
+    background-size: 400% 400%;
+    animation: gradientLoop 10s ease infinite;
+  }
+  
+  @keyframes gradientLoop {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
