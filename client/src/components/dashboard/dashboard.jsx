@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FiShoppingCart, FiPackage, FiLayers, FiUser, FiLogOut } from 'react-icons/fi';
-import './Dashboard.css';
+import './dashboard.css';
 
 const Dashboard = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
