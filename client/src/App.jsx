@@ -43,7 +43,7 @@ function App() {
             <Route path="placeorder" element={<PlaceOrder />} />
             <Route path="order" element={<Order />} />
             <Route path="exisitingstack" element={<Exisitingstack />} />
-            <Route path="report" element={<Report />} />
+            {/* <Route path="report" element={<Report />} /> */}
           </Route>
 
           <Route element={<ProductionProtectedRoute />}>
