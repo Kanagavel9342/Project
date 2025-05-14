@@ -7,7 +7,7 @@ import {
   FiUser,
   FiLogOut
 } from 'react-icons/fi';
-import './Productiondashboard.css';
+import './productiondashboard.css';
 
 const Productiondashboard = () => {
   const [activeCard, setActiveCard] = useState(null);
