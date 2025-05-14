@@ -14,7 +14,7 @@ import Stacks from "./components/dashboard/stacks";
 import PlaceOrder from "./components/dashboard/placeoreder";
 import Order from "./components/dashboard/order";
 import Exisitingstack from "./components/dashboard/exisitingstack";
-import Report from "./components/dashboard/report";
+// import Report from "./components/dashboard/report";
 
 //produuction
 import Productiondashboard from "./components/Production unit/production dashboard/productiondashboard";
