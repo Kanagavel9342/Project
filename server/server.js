@@ -24,6 +24,9 @@ db.connect((err) => {
   console.log("✅ Connected to MySQL database");
 });
 
+// Get API base URL from environment variable
+const API_BASE_URL = process.env.API_BASE_URL || '';
+
 // Reusable DB query handler
 const handleQuery = (res, query, params, callback) => {
   db.query(query, params, (err, results) => {
@@ -39,7 +42,7 @@ const handleQuery = (res, query, params, callback) => {
 };
 
 // ---------- Login Routes ----------
-app.post("/api/login", (req, res) => {
+app.post(`${API_BASE_URL}/api/login`, (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
     return res
@@ -65,7 +68,7 @@ app.post("/api/login", (req, res) => {
   });
 });
 
-app.post("/api/production-login", (req, res) => {
+app.post(`${API_BASE_URL}/api/production-login`, (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
     return res
@@ -92,7 +95,7 @@ app.post("/api/production-login", (req, res) => {
 });
 
 // ---------- Stack Routes ----------
-app.post("/api/stacks", (req, res) => {
+app.post(`${API_BASE_URL}/api/stacks`, (req, res) => {
   const { micron, meter, size, color, stock } = req.body;
   const query =
     "INSERT INTO stacks (micron, meter, size, color, stock) VALUES (?, ?, ?, ?, ?)";
@@ -101,11 +104,11 @@ app.post("/api/stacks", (req, res) => {
   });
 });
 
-app.get("/api/stacks", (req, res) => {
+app.get(`${API_BASE_URL}/api/stacks`, (req, res) => {
   handleQuery(res, "SELECT * FROM stacks", [], (results) => res.json(results));
 });
 
-app.put("/api/stacks/:id", (req, res) => {
+app.put(`${API_BASE_URL}/api/stacks/:id`, (req, res) => {
   const { id } = req.params;
   const { micron, meter, size, color, stock } = req.body;
   const query =
@@ -115,14 +118,14 @@ app.put("/api/stacks/:id", (req, res) => {
   );
 });
 
-app.delete("/api/stacks/:id", (req, res) => {
+app.delete(`${API_BASE_URL}/api/stacks/:id`, (req, res) => {
   handleQuery(res, "DELETE FROM stacks WHERE id = ?", [req.params.id], () =>
     res.json({ message: "Stack deleted", id: req.params.id })
   );
 });
 
 // ---------- Place Order Route ----------
-app.post("/api/place-order", (req, res) => {
+app.post(`${API_BASE_URL}/api/place-order`, (req, res) => {
   const { customerName, contactNumber, district, transport, products } =
     req.body;
 
@@ -193,7 +196,7 @@ app.post("/api/place-order", (req, res) => {
 });
 
 // ---------- Get All Orders ----------
-app.get("/api/orders", (req, res) => {
+app.get(`${API_BASE_URL}/api/orders`, (req, res) => {
   console.log("✅ /api/orders route hit");
 
   const query = `
@@ -242,7 +245,7 @@ app.get("/api/orders", (req, res) => {
 });
 
 // ---------- Update Order Status ----------
-app.patch("/api/orders/:id", (req, res) => {
+app.patch(`${API_BASE_URL}/api/orders/:id`, (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
 
@@ -261,12 +264,11 @@ app.patch("/api/orders/:id", (req, res) => {
 });
 
 // ---------- Mark Order as Completed ----------
-app.post('/api/orders/:orderId/complete', async (req, res) => {
-const { orderId } = req.params;
+app.post(`${API_BASE_URL}/api/orders/:orderId/complete`, async (req, res) => {
+  const { orderId } = req.params;
 
- const query = "UPDATE orders SET status = 'completed' WHERE id = ?";
-handleQuery(res, query, [orderId], (result) => {
-
+  const query = "UPDATE orders SET status = 'completed' WHERE id = ?";
+  handleQuery(res, query, [orderId], (result) => {
     if (result.affectedRows === 0) {
       res.status(404).json({ error: "Order not found" });
     } else {
@@ -275,9 +277,7 @@ handleQuery(res, query, [orderId], (result) => {
   });
 });
 
-//
-
-app.delete('/api/orders/:orderId', async (req, res) => {
+app.delete(`${API_BASE_URL}/api/orders/:orderId`, async (req, res) => {
   const { orderId } = req.params;
 
   try {
@@ -294,16 +294,8 @@ app.delete('/api/orders/:orderId', async (req, res) => {
   }
 });
 
-
-
-
-// 
-
-
-
-// ─── UPDATE A SINGLE PRODUCT IN AN ORDER ────────────────────────────────────────
-// PUT /api/orders/:orderId/products/:productId
-app.put('/api/orders/:orderId/products/:productId', async (req, res) => {
+// Update a single product in an order
+app.put(`${API_BASE_URL}/api/orders/:orderId/products/:productId`, async (req, res) => {
   const { orderId, productId } = req.params;
   const {
     micron,
@@ -352,7 +344,6 @@ app.put('/api/orders/:orderId/products/:productId', async (req, res) => {
     res.status(500).json({ message: 'Failed to update product.' });
   }
 });
-
 
 // ---------- 404 Handler ----------
 app.use((req, res) => {

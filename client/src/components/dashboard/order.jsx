@@ -39,9 +39,8 @@ const OrderEntry = () => {
       quantity: product.quantity,
       unit: product.unit,
     });
-    setShowEditForm(true);
   };
-
+  
   const handleDeleteClick = async (orderId) => {
     if (window.confirm("Are you sure you want to delete this order?")) {
       await deleteOrder(orderId); // ✅ Keep using `orderId` for deletion
@@ -53,6 +52,7 @@ const OrderEntry = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+  setShowEditForm(true);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
