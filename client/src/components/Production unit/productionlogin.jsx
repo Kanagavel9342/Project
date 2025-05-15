@@ -31,16 +31,16 @@ const Productionlogin = () => {
     setError("");
 
     try {
-      const response = await fetch("/api/production-login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: formData.username,
-          password: formData.password,
-        }),
-      });
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/production-login`, // ✅ Use environment variable
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
 
       const data = await response.json();
 
@@ -48,7 +48,8 @@ const Productionlogin = () => {
         throw new Error(data.error || "Production login failed");
       }
 
-localStorage.setItem("productionUser", data.user.username); 
+      // Store production username
+      localStorage.setItem("productionUser", data.user.username);
       navigate("/production-dashboard");
     } catch (err) {
       setError(err.message);

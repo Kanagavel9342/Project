@@ -25,39 +25,36 @@ const Login = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+  setError('');
 
-    try {
-        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/login`, { 
-          method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      });
+  try {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/login`, { 
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    });
 
-      const data = await response.json();
+    const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(data.error || 'Login failed');
-      }
-
-      // Store username in localStorage
-      
-      localStorage.setItem('username', data.user.username);
-
-
-      // Navigate to dashboard on successful login
-      navigate('/dashboard');
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+    if (!response.ok) {
+      throw new Error(data.error || 'Login failed');
     }
-  };
+
+    localStorage.setItem('username', data.user.username);
+
+    navigate('/dashboard');
+  } catch (err) {
+    setError(err.message);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const goToProductionLogin = () => {
     navigate('/production-login');
